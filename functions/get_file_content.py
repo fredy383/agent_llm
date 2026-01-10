@@ -1,5 +1,20 @@
 import os
 from config import MAX_CHARS
+from google.genai import types
+
+schema_get_files_content = types.FunctionDeclaration(
+    name="get_file_content",
+    description="Get the content of the file, if the file is readable",
+    parameters=types.Schema(
+        type=types.Type.OBJECT,
+        properties={
+            "file_path": types.Schema(
+                type=types.Type.STRING,
+                description="Name (not path!) of the file which we want the content",
+            ),
+        },
+    ),
+)
 
 def get_file_content(working_directory, file_path):
 

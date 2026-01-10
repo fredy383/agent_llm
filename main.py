@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from google import genai
 from google.genai import types
 from prompts import system_prompt
+from call_function import *
 
 def main():
     parser = argparse.ArgumentParser(description="Fredobot")
@@ -24,7 +25,9 @@ def main():
     generation = client.models.generate_content(
         model='gemini-2.5-flash',
         contents=messages,
-        config=types.GenerateContentConfig(system_instruction=system_prompt)
+        config=types.GenerateContentConfig(
+            tools=[available_functions],
+            system_instruction=system_prompt)
         )
 
     if args.verbose == True:
@@ -36,6 +39,10 @@ def main():
         print(f"Prompt tokens: {tokens_prompt}")
         print(f"Response tokens: {tokens_answer}")
 
+    if generation.function_calls:
+        for item in generation.function_calls:
+            print(item.name)
+            print(item.args)
     print(generation.text)
 
 if __name__ == "__main__":
